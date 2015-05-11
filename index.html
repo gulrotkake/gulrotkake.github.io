@@ -2,8 +2,90 @@
 <html>
   <head>
     <title>☔</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+    <link href="//fonts.googleapis.com/css?family=Titillium+Web:400,300,200,600" rel='stylesheet' type='text/css'>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/styles/railscasts.min.css"/>
+    <link rel="stylesheet" href="styles/reset.css"/>
+    <link rel="stylesheet" href="styles/main.css"/>
   </head>
   <body>
-    Hello, world!
+    <h1>Blog</h1>
+    <h2>Simple OSX Screenshot Sharing</h2>
+    <p>
+      Being an overly paranoid developer I have an immediate distrust
+      to small opaque convenience services that upload my data to
+      servers I do not control. One such service that I use almost
+      daily is a screenshot service. A quick Google search to see if
+      any of those screenshot services could upload to a personal
+      server came back empty-handed. Thinking that it can't be that
+      hard, I decided to roll my own. Luckily, for once, it wasn't
+      that hard, here's how I did it:
+    </p>
+    <p>
+      First, to make things a little cleaner and less prone to
+      mistakes, I configured OSX to place all screenshots into a
+      specific directory called ~/Screenshots:
+    <script>hljs.initHighlightingOnLoad();</script>
+    <pre><code class="bash">
+        # Change the screenshot directory to ~/Screenshots
+        $ defaults write com.apple.screencapture location ~/Screenshots/
+
+        # Restart the SystemUIServer, to start using new directory
+        $ launchctl stop com.apple.SystemUIServer.agent
+      </code></pre>
+    </p>
+    <p>
+    Next, using the Apple Script Editor (included with OSX), I wrote
+    a small Apple Script, called upload-image, which copies <em>png</em>
+    files from the screenshot directory, to a remote server, using scp:
+    <pre><code class="applescript">property username : "ubuntu"
+property hostname : "tightloop"
+property target_path : "/data/static"
+property target_url : "http://image.tightloop.io/"
+
+on adding folder items to folder_name after receiving list_files
+  tell application "Finder"
+    set random to ""
+    repeat 5 times
+      set random to random & some item of "abcdefghijklmnopqrstuvwxyz1234567890"
+    end repeat
+    set screenshot to item 1 of list_files
+
+    if name extension of screenshot is in {"png"} then
+      set the screenshot_path to the quoted form of the POSIX path of screenshot
+      do shell script ("scp " & screenshot_path & " " & username & "@" & hostname & ":" & target_path & "/" & random & ".png")
+    end if
+    set the clipboard to target_url & random & ".png"
+    display notification "Uploaded image, link copied to clipboard" with title "Uploaded"
+  end tell
+end adding folder items to</code></pre>
+    </p>
+    <p>
+      Then I placed the newly created upload-image script in
+      the <em>/Library/Scripts/Folder\ Action\ Scripts/</em>
+      directory, right-clicked on the Screenshots folder and selected
+      "Folder Actions Setup..."
+      <img class="screenshot" src="screenshots/folder_action.png" width="600px" alt="Folder Actions Setup..."/>
+      and from the list of Folder Actions, I selected the upload script
+      <img class="screenshot" src="screenshots/upload_action.png" width="600px" alt="Add upload"/>
+    </p>
+    <p>
+      And finally on my server, which is
+      running <a href="http://nginx.org">nginx</a>, I simply set up a
+      static location to serve <em>png</em> files:
+      <pre><code>server {
+    listen 80;
+    server_name image.example.com;
+
+    location ~ \.(png)  {
+        root /data/static;
+    }
+}</code></pre>
+    </p>
+    <footer>Code published in the blog is licensed under the
+      <a href="http://opensource.org/licenses/MIT">MIT</a>
+      license, unless otherwise specified.
+    </footer>
   </body>
 </html>

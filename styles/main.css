@@ -1,0 +1,53 @@
+html, body {
+    font-family: "Helvetica Neue", "Helvetica", "sans seric", sans-serif;
+    background: #fcfefe;
+    font-weight: 300;
+    color: #515151;
+}
+
+body {
+    width: 600px;
+    margin:2em auto;
+}
+
+h1 {
+    letter-spacing: -.4px;
+    font-family: Georgia, "Times New Roman", "Serif";
+    color: #9a2c35;
+    font-size:2em;
+    letter-spacing: 1pt;
+    font-variant: small-caps;
+    font-weight:normal;
+    margin: 1em 0;
+}
+
+h2 {
+    letter-spacing: -.4px;
+    font-family: Georgia, "Times New Roman", "Serif";
+    color: #aa3c45;
+    font-size:1.2em;
+    letter-spacing: 1pt;
+    font-variant: small-caps;
+    font-weight:normal;
+}
+
+p {
+    margin-top: 1em;
+    line-height:14pt;
+}
+
+pre {
+    margin-top: 1em;
+}
+
+.screenshot {
+    width: 600px;
+    border:1px solid #aaa;
+    margin: 1em 0;
+}
+
+footer {
+    font-size:7pt;
+    color: #aaa;
+    text-align:right;
+}
