@@ -41,8 +41,7 @@ pre {
 }
 
 .screenshot {
-    width: 600px;
-    border:1px solid #aaa;
+    max-width: 600px;
     margin: 1em 0;
 }
 
