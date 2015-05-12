@@ -16,11 +16,12 @@
       Being an overly paranoid developer I have an immediate distrust
       to small opaque convenience services that upload my data to
       servers I do not control. One such service that I use almost
-      daily is a screenshot service. A quick Google search to see if
-      any of those screenshot services could upload to a personal
-      server came back empty-handed. Thinking that it can't be that
-      hard, I decided to roll my own. Luckily, for once, it wasn't
-      that hard, here's how I did it:
+      daily is a screenshot service, which copies a public link to the
+      clipboard. A quick Google search to see if any of those
+      screenshot services could upload to a personal server came back
+      empty-handed. Thinking that it can't be that hard, I decided to
+      roll my own. Luckily, for once, it wasn't that hard, here's how
+      I did it:
     </p>
     <p>
       First, to make things a little cleaner and less prone to
@@ -38,11 +39,12 @@
     <p>
     Next, using the Apple Script Editor (included with OSX), I wrote
     a small Apple Script, called upload-image, which copies <em>png</em>
-    files from the screenshot directory, to a remote server, using scp:
+    files from the screenshot directory, to a remote server, using scp
+    and adds a link to my clipboard:
     <pre><code class="applescript">property username : "ubuntu"
-property hostname : "tightloop"
+property hostname : "ssh.example.com"
 property target_path : "/data/static"
-property target_url : "http://image.tightloop.io/"
+property target_url : "http://image.example.com/"
 
 on adding folder items to folder_name after receiving list_files
   tell application "Finder"
